@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: marimo-app
+    env: docker
+    plan: free
+    autoDeploy: true
+    envVars:
+      - key: PORT
+        value: 8080
+      - key: DB_USER
+        value: Group-14
+      - key: DB_PASSWORD
+        value: yourEncodedPasswordHere
+      - key: DB_SERVER
+        value: badm-554.database.windows.net
+      - key: DB_NAME
+        value: EDM_Group_14
