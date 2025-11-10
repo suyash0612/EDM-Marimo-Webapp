@@ -1,8 +1,11 @@
-# Use full Python 3.11 Debian image
-FROM python:3.11-bookworm
+# Use full Python 3.13 Debian image
+FROM python:3.13-bookworm
 
 # Avoid interactive prompts during apt install
 ENV DEBIAN_FRONTEND=noninteractive
+
+# Set environment variable to prevent Polars from using Arrow (as per script)
+ENV POLARS_NO_ARROW=1
 
 # ---------- Install system dependencies ----------
 RUN apt-get update && \
