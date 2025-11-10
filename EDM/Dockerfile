@@ -1,28 +1,30 @@
-# ---------- Base image ----------
+# Use full Python 3.11 Debian image
 FROM python:3.11-bookworm
 
-# Prevent interactive prompts during build
+# Avoid interactive prompts during apt install
 ENV DEBIAN_FRONTEND=noninteractive
 
-# ---------- Install ODBC dependencies ----------
+# ---------- Install system dependencies ----------
 RUN apt-get update && \
-    apt-get install -y curl gnupg2 apt-transport-https unixodbc-dev && \
-    # Import Microsoft signing key
+    apt-get install -y curl gnupg2 apt-transport-https build-essential g++ unixodbc-dev && \
     curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > /usr/share/keyrings/microsoft.gpg && \
-    # Add Microsoft repository for Debian 12 (bookworm)
     echo "deb [arch=amd64 signed-by=/usr/share/keyrings/microsoft.gpg] https://packages.microsoft.com/debian/12/prod bookworm main" > /etc/apt/sources.list.d/mssql-release.list && \
     apt-get update && ACCEPT_EULA=Y apt-get install -y msodbcsql17 && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
-# ---------- Working directory ----------
+# ---------- Set working directory ----------
 WORKDIR /app
-COPY . /app
+COPY requirements.txt /app/
 
-# ---------- Python dependencies ----------
+# ---------- Install Python dependencies ----------
+RUN pip install --upgrade pip wheel setuptools
 RUN pip install --no-cache-dir -r requirements.txt
 
-# ---------- Networking ----------
+# ---------- Copy project files ----------
+COPY . /app
+
+# ---------- Expose Marimo port ----------
 EXPOSE 8080
 
-# ---------- Launch ----------
+# ---------- Launch Marimo ----------
 CMD ["marimo", "run", "prj1.py", "--host", "0.0.0.0", "--port", "8080"]
