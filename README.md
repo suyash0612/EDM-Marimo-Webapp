@@ -1,6 +1,6 @@
 *🍽️ Tampa Restaurants Market Analysis Dashboard*
 
-
+<img width="1467" height="871" alt="Screenshot 2025-11-10 at 8 16 14 PM" src="https://github.com/user-attachments/assets/300d2f28-56e7-4acd-9e84-6d9588871e7b" />
 
 
 The Tampa Restaurants Market Analysis Dashboard is an interactive business intelligence web application designed to help users explore the restaurant landscape in Tampa, Florida. Built with data visualization and SQL integration, this dashboard empowers users to analyze restaurant performance, review trends, and discover business opportunities in the hospitality industry.
