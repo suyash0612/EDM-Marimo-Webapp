@@ -78,28 +78,59 @@ def _(SQL_SERVER, SQL_USER, SQL_PASSWORD, SQL_DATABASE, SQL_DRIVER, urllib, crea
     try:
         with engine.connect() as _conn:
             test_result = _conn.execute(text("SELECT 1"))
-            connection_status = "✅ Connected successfully to Azure SQL"
+            connection_status = "Connected successfully to Azure SQL ✅ "
     except Exception as e:
-        connection_status = f"❌ Connection failed: {str(e)[:150]}"
+        connection_status = f"Connection failed to Azure SQL: {str(e)[:150]} ❌ "
     
-    mo.callout(connection_status)
-    return engine
+    return engine, connection_status
 
 
 @app.cell
 def _(mo):
-    mo.md("""
-    # 🍔 Tampa Restaurant Market Analysis Dashboard
-    **Interactive Business Intelligence Platform**
+    show_instructions = mo.ui.switch(value=False, label="*Instructions To Use Dashboard (Recommended)*📚")
+    return show_instructions
+
+@app.cell
+def _(mo, show_instructions, connection_status):
+    instructions = mo.md("""
+    ## 📖 Quick Start Guide
     
-    Explore curated insights optimized for visualization:
-    - 📊 Revenue & performance metrics
-    - ⭐ Rating analysis and distributions
-    - 📍 Geographic heat maps
-    - 💬 Customer sentiment trends
-    - 🏆 Top performers and opportunities
-    - 🍔 Scroll down to select an analysis, run the query, and visualize the results with different charts!
+    **1️⃣ Select Query** → Choose from 10 pre-written queries or create a custom SQL query to Azure SQL Database
+    
+    **2️⃣ Execute** → Data automatically fetches from Azure SQL Database
+    
+    **3️⃣ Visualize** → Pick chart type (Bar/Scatter/Line/Histogram) and select X/Y axes
+    
+    **4️⃣ Analyze** → Review insights and patterns using charts
+    
+    ### Chart Types:
+    - **Bar Chart**: Compare values across categories
+    - **Scatter Plot**: Find relationships between variables
+    - **Line Chart**: Track trends over time
+    - **Histogram**: Show distribution patterns
+    
+    ### Example Workflows:
+    - *Market Gaps*: Use "Market Saturation" → Bar Chart (rating_bracket vs count)
+    - *Trends*: Use "Sentiment Over Time" → Line Chart (month vs avg_rating)
+    - *Top Performers*: Use "Performance" → Scatter Plot (review_count vs stars, color by status)
+    - *Cuisines*: Use "Top Cuisines" → Bar Chart (cuisine vs count)
+
+    **Note that some queries may take longer to execute depending on the data size**
     """)
+    
+    header = mo.vstack([
+        mo.md("###EDM Project 1 | Author: Suyash Sawant | Email: ssawant4@illinois.edu"),
+        mo.md("#"),
+        mo.md("# 🍔 Tampa Restaurants Market Analysis Dashboard"),
+        mo.md("*Interactive Business Intelligence Platform - Explore trends, relationships & opportunities*"),
+        mo.callout(connection_status, kind="success" if "successfully" in connection_status else "warn"),
+        show_instructions,
+    ])
+    
+    if show_instructions.value:
+        header = mo.vstack([header, instructions])
+    
+    header
 
 @app.cell
 def _(mo):
